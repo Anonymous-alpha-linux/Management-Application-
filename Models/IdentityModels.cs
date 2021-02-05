@@ -26,6 +26,8 @@ namespace WebApplication1.Models
         }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<TraineeCourses> TraineeCourses { get; set; }
+        public DbSet<TrainerCourses> TrainerCourses { get; set; }
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();

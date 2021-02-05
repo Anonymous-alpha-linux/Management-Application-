@@ -39,10 +39,9 @@
                                     </td>
                     <td scope="row">
                         @Html.ActionLink("Delete", "DeleteCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-danger" })
-                        @Html.ActionLink("Edit Trainee", "EditCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
-                        @Html.ActionLink("Trainee Details", "DetailCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-primary" })
-                        @Html.ActionLink("Assign Trainer", "AssignTrainer", "Staff", new { @id = item.Id }, new { @class = "btn btn-danger" })
-                        @Html.ActionLink("Assign Trainee", "AssignTrainee", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
+                        @Html.ActionLink("Edit", "EditCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
+                        @Html.ActionLink("Assign Trainer", "AssignCourseToTrainer", "Staff", new { @id = item.Id }, new { @class = "btn btn-danger" })
+                        @Html.ActionLink("Assign Trainee", "AssignCourseToTrainee", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
                     </td>
                 </tr>
             }

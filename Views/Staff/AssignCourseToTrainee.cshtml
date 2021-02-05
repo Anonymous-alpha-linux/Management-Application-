@@ -1,0 +1,42 @@
+﻿@model WebApplication1.Models.AssignTraineeViewModel
+@{
+    ViewBag.Title = "AssignTrainer";
+}
+
+<h2>AssignTrainer</h2>
+<hr />
+@Html.ActionLink("Back To Course", "CourseView", "Staff", null, new { @class = "btn btn-default" })
+<br>
+@using (Html.BeginForm("AssignCourseToTrainee", "Staff", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>Create Course.</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.CourseId, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.CourseId, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.CourseId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Course.CourseName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Course.CourseName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Course.CourseName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.TraineeId, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.TraineeId, new SelectList(Model.Trainees, "Id", "UserName"), new { @class = "dropdown" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Assign" />
+        </div>
+    </div>
+}
+

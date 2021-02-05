@@ -275,10 +275,13 @@ namespace WebApplication1.Controllers
             _context.SaveChanges();
             return RedirectToAction("CourseView","Staff");
         }
-        public ActionResult EditCourse()
+        public ActionResult EditCourse(int id)
         {
+            var course = _context.Courses.SingleOrDefault(t => t.Id == id);
             var model = new CreateCourseViewModel()
             {
+                Id = id,
+                Course = course,
                 Categories = _context.Categories.ToList(),
             };
             return View(model);
@@ -286,12 +289,65 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public ActionResult EditCourse(CreateCourseViewModel model)
         {
-            var created_course = new Course();
+            var created_course = _context.Courses.SingleOrDefault(t => t.Id == model.Id);
             created_course.CourseName = model.Course.CourseName;
             created_course.CourseDetail = model.Course.CourseDetail;
             created_course.CategoryId = model.Course.CategoryId;
 
-            _context.Courses.Add(created_course);
+            _context.SaveChanges();
+            return RedirectToAction("CourseView", "Staff");
+        }
+        /// <summary>
+        /// Assign Trainer to Course
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult AssignCourseToTrainer(int id)
+        {
+            var trainercourses = new AssignTrainerViewModel()
+            {
+                CourseId = id,
+                Course = _context.Courses.SingleOrDefault(t => t.Id == id),
+                Trainers = _context.Users.OfType<Trainer>().ToList(),
+            };
+            return View(trainercourses);
+        }
+        [HttpPost]
+        public ActionResult AssignCourseToTrainer(AssignTrainerViewModel model)
+        {
+            var assignCourse = new TrainerCourses();
+
+            assignCourse.CourseId = model.CourseId;
+            assignCourse.TrainerId = model.TrainerId;
+            
+            _context.TrainerCourses.Add(assignCourse);
+            _context.SaveChanges();
+            return RedirectToAction("CourseView", "Staff");
+        }
+
+        /// <summary>
+        /// Assign Trainee to Course
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult AssignCourseToTrainee(int id)
+        {
+            var traineecourses = new AssignTraineeViewModel()
+            {
+                CourseId = id,
+                Course = _context.Courses.SingleOrDefault(t => t.Id == id),
+                Trainees = _context.Users.OfType<Trainee>().ToList(),
+            };
+            return View(traineecourses);
+        }
+        [HttpPost]
+        public ActionResult AssignCourseToTrainee(AssignTraineeViewModel model)
+        {
+            var assignCourse = new TraineeCourses();
+            assignCourse.CourseId = model.CourseId;
+            assignCourse.TraineeId = model.TraineeId;
+
+            _context.TraineeCourses.Add(assignCourse);
             _context.SaveChanges();
             return RedirectToAction("CourseView", "Staff");
         }

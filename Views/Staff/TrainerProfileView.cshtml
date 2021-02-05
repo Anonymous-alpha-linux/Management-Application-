@@ -1,0 +1,42 @@
+﻿@model IEnumerable<WebApplication1.Models.Trainer>
+@{
+    ViewBag.Title = "Trainer Profile List";
+}
+
+<h1>Trainer Profile List</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Trainer Name</th>
+            <th scope="col">External or Internal Type</th>
+            <th scope="col">Education</th>
+            <th scope="col">Working Place</th>
+            <th scope="col">Telephone</th>
+            <th scope="col">Email</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{int i = 0;
+            foreach (var item in Model)
+            {
+                i++;
+                <tr>
+                    <td scope="row">@i</td>
+                    <td scope="row">@item.UserName</td>
+                    <td scope="row">@item.ExorInType</td>
+                    <td scope="row">@item.Education</td>
+                    <td scope="row">@item.Working_Address</td>
+                    <td scope="row">@item.PhoneNumber</td>
+                    <td scope="row">@item.Email</td>
+                    <td scope="row">
+                        @Html.ActionLink("Edit Trainer", "EditTrainerProfile", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
+                        @Html.ActionLink("Trainer Details", "DetailTrainer", "Staff", new { @id = item.Id }, new { @class = "btn btn-primary" })
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

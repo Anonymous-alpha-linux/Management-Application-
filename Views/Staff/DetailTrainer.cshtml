@@ -1,0 +1,43 @@
+﻿@model WebApplication1.Models.Trainer
+
+@{
+    ViewBag.Title = "Trainer detail";
+}
+
+<h1>Trainer Detail</h1>
+
+@Html.ActionLink("Back to Index", "TrainerProfileView", "Staff", null, new { @class = "btn btn-primary" })
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        @Html.Label("User Name:")
+        <h3 class="panel-title">@Model.UserName</h3>
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("Email:")
+        @Model.Email
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("Phone Number:")
+        @Model.PhoneNumber
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("Working place:")
+        @Model.Working_Address
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("Education:")
+        @Model.Education
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("External or Internal Type:")
+        @Model.ExorInType
+    </div>
+    <br />
+    @Html.ActionLink("Edit", "EditTrainerProfile", "Staff", new { @id = Model.Id }, new { @class = "btn btn-primary" })
+</div>

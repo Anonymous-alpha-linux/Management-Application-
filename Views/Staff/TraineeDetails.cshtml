@@ -1,0 +1,49 @@
+﻿@model WebApplication1.Models.Trainee
+@{
+    ViewBag.Title = "Trainee Details";
+}
+<h1>Trainee Details</h1>
+@Html.ActionLink("Back to Index", "TraineeAccountView", "Staff", null, new { @class = "btn btn-primary" })
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        @Html.Label("User Name:")
+        <h3 class="panel-title">@Model.UserName</h3>
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("Email:")
+        @Model.Email
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("Age:")
+        @Model.Age
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("Location:")
+        @Model.Location
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("Date of birth:")
+        @Model.Date_of_birth
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("TOEIC score:")
+        @Model.TOEIC_score
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("Education:")
+        @Model.Education
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("Experience detail:")
+        @Model.Exp_details
+    </div>
+    @Html.ActionLink("Edit", "EditTraineeAccount", "Staff", new { @id = Model.Id }, new { @class = "btn btn-primary" })
+</div>

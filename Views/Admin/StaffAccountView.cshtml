@@ -1,0 +1,36 @@
+﻿@model IEnumerable<WebApplication1.Models.ApplicationUser>
+@{
+    ViewBag.Title = "StaffAccountView";
+}
+
+<h2>Staff Account</h2>
+<br />
+@Html.ActionLink("Create new user", "Register", "Account", routeValues: null, htmlAttributes: new { id = "btn btn-default" })
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">User Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{int i = 0;
+            foreach (var item in Model)
+            {
+                i++;
+                <tr>
+                    <td scope="row">@i</td>
+                    <td scope="row">@item.UserName</td>
+                    <td scope="row">@item.Email</td>
+                    <td scope="row">
+                        @Html.ActionLink("Delete", "DeleteStaffAccount", "Admin", new { @id = item.Id }, new { @class = "btn btn-default" })
+                        @Html.ActionLink("Edit", "EditStaffAccount", "Admin", new { @id = item.Id }, new { @class = "btn btn-default" })
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

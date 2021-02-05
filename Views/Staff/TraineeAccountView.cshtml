@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNet.Identity
+@model IEnumerable<WebApplication1.Models.Trainee>
+@{
+    ViewBag.Title = "TraneeAccountView";
+}
+<h1>Trainee Accounts</h1>
+<hr />
+
+@Html.ActionLink("Create new trainee", "Register", "Account", routeValues: null, htmlAttributes: new { id = "btn btn-primary" })
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">User Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Department</td>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{int i = 0;
+            foreach (var item in Model)
+            {
+                i++;
+                <tr>
+                    <td scope="row">@i</td>
+                    <td scope="row">@item.UserName</td>
+                    <td scope="row">@item.Email</td>
+                    <td scope="row">@item.Department</td>
+                    <td scope="row">
+                        @Html.ActionLink("Delete", "DeleteTraineeAccount", "Staff", new { @id = item.Id }, new { @class = "btn btn-danger" })
+                        @Html.ActionLink("Edit Trainee", "EditTraineeAccount", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
+                        @Html.ActionLink("Trainee Details", "TraineeDetails", "Staff", new { @id = item.Id }, new { @class = "btn btn-primary" })
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

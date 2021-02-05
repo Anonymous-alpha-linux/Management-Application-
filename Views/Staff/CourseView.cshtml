@@ -1,0 +1,47 @@
+﻿@model IEnumerable<WebApplication1.Models.Course>
+@{
+    ViewBag.Title = "Course View";
+}
+<h1>Course List</h1>
+
+@Html.ActionLink("Create Course", "CreateCourse", "Staff", null, new { @class = "btn btn-default" })
+@Html.ActionLink("Create Category", "CreateCategory", "Staff", null, new { @class = "btn btn-default" })
+<hr />
+
+@Html.TextBox("searchString", "Course", new { @class = "form-control" })
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Course Name</th>
+            <th scope="col">Course Detail</th>
+            <th scope="col">Category Id</th>
+            <th scope="col">Category Name</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{int i = 0;
+            foreach (var item in Model)
+            {
+                i++;
+                <tr>
+                    <td scope="row">@i</td>
+                    <td scope="row">@item.CourseName</td>
+                    <td scope="row">@item.CourseDetail</td>
+                    <td scope="row">@item.CategoryId<span>@Html.ActionLink("x", "RemoveCategoryFromCourse", "Staff", new { @id = item.CategoryId }, new { @class = "badge" })</span></td>
+                    <td scope="row">
+                        @item.Category.CategoryName<span>@Html.ActionLink("x", "RemoveCategoryFromCourse", "Staff", new { @id = item.Category.Id }, new { @class = "badge" })</span>
+                    </td>
+                    <td scope="row">
+                        @Html.ActionLink("Delete", "DeleteCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-danger" })
+                        @Html.ActionLink("Edit Trainee", "EditCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
+                        @Html.ActionLink("Trainee Details", "DetailCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Assign Trainer", "AssignTrainer", "Staff", new { @id = item.Id }, new { @class = "btn btn-danger" })
+                        @Html.ActionLink("Assign Trainee", "AssignTrainee", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

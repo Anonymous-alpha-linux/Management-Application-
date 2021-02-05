@@ -6,6 +6,7 @@
 
 @Html.ActionLink("Create Course", "CreateCourse", "Staff", null, new { @class = "btn btn-default" })
 @Html.ActionLink("Create Category", "CreateCategory", "Staff", null, new { @class = "btn btn-default" })
+@Html.ActionLink("View Category", "CategoryView", "Staff", null, new { @class = "btn btn-default" })
 <hr />
 
 @Html.TextBox("searchString", "Course", new { @class = "form-control" })
@@ -29,10 +30,13 @@
                     <td scope="row">@i</td>
                     <td scope="row">@item.CourseName</td>
                     <td scope="row">@item.CourseDetail</td>
-                    <td scope="row">@item.CategoryId<span>@Html.ActionLink("x", "RemoveCategoryFromCourse", "Staff", new { @id = item.CategoryId }, new { @class = "badge" })</span></td>
-                    <td scope="row">
-                        @item.Category.CategoryName<span>@Html.ActionLink("x", "RemoveCategoryFromCourse", "Staff", new { @id = item.Category.Id }, new { @class = "badge" })</span>
+                    <td scope="row">@item.CategoryId
+                    <span>@Html.ActionLink("x", "RemoveCategoryFromCourse", "Staff", new { @id = item.CategoryId }, new { @class = "badge" })</span>
                     </td>
+                    <td scope="row">
+                        @item.Category.CategoryName
+                                        <span>@Html.ActionLink("x", "RemoveCategoryFromCourse", "Staff", new { @id = item.Category.Id }, new { @class = "badge" })</span>
+                                    </td>
                     <td scope="row">
                         @Html.ActionLink("Delete", "DeleteCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-danger" })
                         @Html.ActionLink("Edit Trainee", "EditCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })

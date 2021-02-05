@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -169,20 +170,15 @@ namespace WebApplication1.Controllers
                 .FirstOrDefault(t => t.Id == id);
             return View(traineeDetails);
         }
+
         /// <summary>
-        /// Course Viewer
+        /// View Categories
         /// </summary>
         /// <returns></returns>
-        public ActionResult CourseView()
+        public ActionResult CategoryView()
         {
-            if (!ModelState.IsValid)
-            {
-                return HttpNotFound();
-            }
-            var courses = _context.Courses
-                .ToList();
-            
-            return View(courses);
+            var categories = _context.Categories.ToList();
+            return View(categories);
         }
         /// <summary>
         /// Create Category
@@ -202,14 +198,102 @@ namespace WebApplication1.Controllers
                 return View();
             }
             _context.Categories.Add(createCategoryViewModel);
+            
             _context.SaveChanges();
             return RedirectToAction("CreateCategory", "Staff");
         }
-        public ActionResult DeleteCategory(Category categoryViewModel)
+        public ActionResult EditCategory(int id)
         {
-            var categories = _context.Categories.FirstOrDefault(t => t.CategoryName == categoryViewModel.CategoryName);
-            _context.Categories.Remove(categories);
-            return View();
+            var category = _context.Categories.FirstOrDefault(t => t.Id == id);
+            return View(category);
+        }
+        [HttpPost]
+        public ActionResult EditCategory(Category categoryViewModel)
+        {
+            var categories = _context.Categories.ToList();
+            var category = _context.Categories.FirstOrDefault(t=>t.Id == categoryViewModel.Id);
+            
+            if (categories.Any(m => m.CategoryName == categoryViewModel.CategoryName))
+            {
+                ModelState.AddModelError("Validation", "Unable to save this value. The database entity exists in the database.");
+                return View();
+            }
+            category.CategoryName = categoryViewModel.CategoryName;
+            
+            _context.SaveChanges();
+            return RedirectToAction("CategoryView","Staff");
+        }
+        public ActionResult DeleteCategory(int id)
+        {
+            var category = _context.Categories.FirstOrDefault(t => t.Id == id);
+            _context.Categories.Remove(category);
+            _context.SaveChanges();
+            return RedirectToAction("CategoryView");
+        }
+        /// <summary>
+        /// Course Viewer
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CourseView()
+        {
+            if (!ModelState.IsValid)
+            {
+                return HttpNotFound();
+            }
+            var courses = _context.Courses.Include(t=>t.Category)
+                .ToList();
+            return View(courses);
+        }
+        /// <summary>
+        /// Create Course 
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CreateCourse()
+        { 
+            var model = new CreateCourseViewModel()
+            {
+                Categories = _context.Categories.ToList(),
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public ActionResult CreateCourse(CreateCourseViewModel model)
+        {
+            var created_course = new Course();
+            created_course.CourseName = model.Course.CourseName;
+            created_course.CourseDetail = model.Course.CourseDetail;
+            created_course.CategoryId = model.Course.CategoryId;
+
+            _context.Courses.Add(created_course);
+            _context.SaveChanges();
+            return RedirectToAction("CourseView","Staff");
+        }
+        public ActionResult DeleteCourse(int id)
+        {
+            var removedCourse = _context.Courses.SingleOrDefault(t => t.Id == id);
+            _context.Courses.Remove(removedCourse);
+            _context.SaveChanges();
+            return RedirectToAction("CourseView","Staff");
+        }
+        public ActionResult EditCourse()
+        {
+            var model = new CreateCourseViewModel()
+            {
+                Categories = _context.Categories.ToList(),
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public ActionResult EditCourse(CreateCourseViewModel model)
+        {
+            var created_course = new Course();
+            created_course.CourseName = model.Course.CourseName;
+            created_course.CourseDetail = model.Course.CourseDetail;
+            created_course.CategoryId = model.Course.CategoryId;
+
+            _context.Courses.Add(created_course);
+            _context.SaveChanges();
+            return RedirectToAction("CourseView", "Staff");
         }
     }
 

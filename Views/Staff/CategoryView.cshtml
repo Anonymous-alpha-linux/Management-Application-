@@ -1,0 +1,35 @@
+﻿@model IEnumerable<WebApplication1.Models.Category>
+@{
+    ViewBag.Title = "CategoryView";
+}
+
+<h2>Category</h2>
+<hr />
+@Html.ActionLink("Back to Index", "CourseView", "Staff", null, new { @class = "btn btn-default" })
+@Html.ActionLink("Create Category", "CreateCategory", "Staff", null, new { @class = "btn btn-default" })
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Category Name</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{int i = 0;
+            foreach (var item in Model)
+            {
+                i++;
+                <tr>
+                    <td scope="row">@i</td>
+                    <td scope="row">@item.CategoryName</td>
+                    <td scope="row">
+                        @Html.ActionLink("Delete", "DeleteCategory", "Staff", new { @id = item.Id }, new { @class = "btn btn-danger" })
+                        @Html.ActionLink("Edit", "EditCategory", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

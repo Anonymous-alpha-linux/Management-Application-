@@ -187,6 +187,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Course.cs" />
+    <Compile Include="Models\CourseViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Staff.cs" />
@@ -264,6 +265,9 @@
     <Content Include="Views\Staff\TraineeDetails.cshtml" />
     <Content Include="Views\Staff\CourseView.cshtml" />
     <Content Include="Views\Staff\CreateCategory.cshtml" />
+    <Content Include="Views\Staff\CategoryView.cshtml" />
+    <Content Include="Views\Staff\EditCategory.cshtml" />
+    <Content Include="Views\Staff\CreateCourse.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

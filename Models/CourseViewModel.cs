@@ -25,4 +25,11 @@ namespace WebApplication1.Models
         public string TraineeId { get; set; }
         public IEnumerable<Trainee> Trainees { get; set; }
     }
+    public class CourseViewModel
+    {
+        public Course Course { get; set; }
+        public Trainer Trainer { get; set; }
+        public string TraineeId { get; set; }
+        public List<Trainee> Trainees { get; set; }
+    }
 }

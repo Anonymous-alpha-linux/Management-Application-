@@ -1,0 +1,69 @@
+﻿@model WebApplication1.Models.CourseViewModel
+@{
+    ViewBag.Title = "DetailCourse";
+}
+
+<h2>Detail Course</h2>
+
+@Html.ActionLink("Back to Index", "CourseView", "Staff", null, new { @class = "btn btn-primary" })
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        @Html.Label("Course Name:")
+        <h3 class="panel-title">@Model.Course.CourseName</h3>
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("Course ID:")
+        @Model.Course.Id
+        @Html.EditorFor(m=>m.Course.Id,new { @class = "d"})
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("Course Detail:")
+        @Model.Course.CourseDetail
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("Category:")
+        @Model.Course.Category.CategoryName
+    </div>
+
+    <div class="panel-body">
+        @Html.Label("Trainer:")
+        @if (Model.Trainer == null)
+        {
+            Html.DisplayText("No Trainer");
+        }
+        else
+        {
+        <button type="button" class="btn btn-success">
+            @Html.ActionLink(Model.Trainer.UserName, "DetailTrainer", "Staff", new { @id = Model.Trainer.Id }, new { @class = "text-primary" })
+        </button>
+        }
+        </div>
+
+    <div class="panel-body">
+        @Html.Label("Trainee List:")
+        @if (Model.Trainees == null)
+        {
+            Html.DisplayText("No Trainee");
+        }
+        else
+        {
+            foreach (var trainee in Model.Trainees)
+            {
+        <button type="button" class="btn btn-success">
+            @Html.ActionLink(trainee.UserName, "TraineeDetails", "Staff", new { @id = trainee.Id }, new { @class = "btn btn-primary" })
+            <span class="badge badge-light">@Html.ActionLink("X", "ResignTraineeFromCourse","Staff",new { @id = trainee.Id})</span>
+        </button>
+                
+            }
+        }
+    </div>
+    <br />
+    @Html.ActionLink("Edit Course", "EditTrainerProfile", "Staff", new { @id = Model.Course.Id}, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Resign Trainer", "AssignCourseToTrainer", "Staff", new { @id = Model.Course.Id }, new { @class = "btn btn-primary" })
+    
+</div>
+

@@ -16,7 +16,6 @@
             <th scope="col">#</th>
             <th scope="col">Course Name</th>
             <th scope="col">Course Detail</th>
-            <th scope="col">Category Id</th>
             <th scope="col">Category Name</th>
             <th scope="col">Action</th>
         </tr>
@@ -30,16 +29,14 @@
                     <td scope="row">@i</td>
                     <td scope="row">@item.CourseName</td>
                     <td scope="row">@item.CourseDetail</td>
-                    <td scope="row">@item.CategoryId
-                    <span>@Html.ActionLink("x", "RemoveCategoryFromCourse", "Staff", new { @id = item.CategoryId }, new { @class = "badge" })</span>
-                    </td>
                     <td scope="row">
                         @item.Category.CategoryName
-                                        <span>@Html.ActionLink("x", "RemoveCategoryFromCourse", "Staff", new { @id = item.Category.Id }, new { @class = "badge" })</span>
-                                    </td>
+                        <span>@Html.ActionLink("x", "RemoveCategoryFromCourse", "Staff", new { @id = item.Category.Id }, new { @class = "badge" })</span>
+                    </td>
                     <td scope="row">
                         @Html.ActionLink("Delete", "DeleteCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-danger" })
                         @Html.ActionLink("Edit", "EditCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
+                        @Html.ActionLink("Detail", "DetailCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
                         @Html.ActionLink("Assign Trainer", "AssignCourseToTrainer", "Staff", new { @id = item.Id }, new { @class = "btn btn-danger" })
                         @Html.ActionLink("Assign Trainee", "AssignCourseToTrainee", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
                     </td>

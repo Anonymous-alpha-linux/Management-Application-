@@ -4,6 +4,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -240,8 +241,11 @@ namespace WebApplication1.Controllers
             {
                 return HttpNotFound();
             }
-            var courses = _context.Courses.Include(t=>t.Category)
+
+            var courses = _context.Courses
+                .Include(t=>t.Category)
                 .ToList();
+
             return View(courses);
         }
         /// <summary>
@@ -297,6 +301,27 @@ namespace WebApplication1.Controllers
             _context.SaveChanges();
             return RedirectToAction("CourseView", "Staff");
         }
+
+        public ActionResult DetailCourse(int id)
+        {
+            var trainees = _context.TraineeCourses
+                .Where(t => t.CourseId == id)
+                .Select(t=>t.Trainee)
+                .ToList();
+            var trainer = _context.TrainerCourses
+                .Where(t => t.CourseId == id)
+                .Select(t => t.Trainer)
+                .Single();
+            var course = new CourseViewModel()
+            {
+                Course = _context.Courses
+                .Include(t=>t.Category)
+                .SingleOrDefault(t=>t.Id == id),
+                Trainees = trainees,
+                Trainer = trainer,
+            };
+            return View(course);
+        }
         /// <summary>
         /// Assign Trainer to Course
         /// </summary>
@@ -315,12 +340,24 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public ActionResult AssignCourseToTrainer(AssignTrainerViewModel model)
         {
+            if (_context.TrainerCourses.Select(t => t.CourseId).Contains(model.CourseId))
+            {
+                var old_trainer = _context.TrainerCourses
+                    .SingleOrDefault(t => t.CourseId == model.CourseId);
+
+                old_trainer.CourseId = model.CourseId;
+                old_trainer.TrainerId = model.TrainerId;
+                _context.SaveChanges();
+                return RedirectToAction("CourseView", "Staff");
+            }
+
             var assignCourse = new TrainerCourses();
 
             assignCourse.CourseId = model.CourseId;
             assignCourse.TrainerId = model.TrainerId;
-            
+
             _context.TrainerCourses.Add(assignCourse);
+            
             _context.SaveChanges();
             return RedirectToAction("CourseView", "Staff");
         }
@@ -343,13 +380,39 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public ActionResult AssignCourseToTrainee(AssignTraineeViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            if(_context.TraineeCourses
+                .Where(t=>t.CourseId == model.CourseId)
+                .Any(t=>t.TraineeId == model.TraineeId))
+            {
+                ModelState.AddModelError("Validation", "This trainee has been assigned to before"); 
+                return View(model);
+            }
+
             var assignCourse = new TraineeCourses();
             assignCourse.CourseId = model.CourseId;
             assignCourse.TraineeId = model.TraineeId;
 
-            _context.TraineeCourses.Add(assignCourse);
+            _context.TraineeCourses.AddOrUpdate(assignCourse);
             _context.SaveChanges();
+
             return RedirectToAction("CourseView", "Staff");
+        }
+
+        public ActionResult ResignTraineeFromCourse(string traineeId,CourseViewModel model)
+        {
+
+            var traineeCourse = _context.TraineeCourses
+                .Where(t => t.CourseId == model.Course.Id)
+                .SingleOrDefault(t => t.TraineeId == traineeId);
+
+            _context.TraineeCourses.Remove(traineeCourse);
+
+            _context.SaveChanges();
+            return RedirectToAction("DetailCourse","Staff",new { @id = model.Course.Id});
         }
     }
 

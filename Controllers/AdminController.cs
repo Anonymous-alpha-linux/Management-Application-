@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
 using WebApplication1.Models;
@@ -14,19 +15,22 @@ namespace WebApplication1.Controllers
     {
         private ApplicationDbContext _context;
         private ApplicationUser _user;
-        private UserManager<ApplicationUser> _userManager;
+        private UserManager<IdentityUser> _userManager;
         public AdminController()
         {
             _context = new ApplicationDbContext();
 
             _user = new ApplicationUser();
 
-            _userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+            _userManager = new UserManager<IdentityUser>(new UserStore<IdentityUser>());
         }
         // GET: Admin
         public ActionResult Index()
         {
-            var users = _context.Users.Where(t => t.Roles.Any(m => m.RoleId == "2" || m.RoleId == "3") == true).ToList();
+            var users = _context.Users
+                .Where(t => t.Roles
+                    .Any(y => y.RoleId == "2" || y.RoleId == "3"))
+                .ToList();
             if (users == null)
             {
                 return HttpNotFound();
@@ -39,7 +43,9 @@ namespace WebApplication1.Controllers
         /// <returns></returns>
         public ActionResult StaffAccountView()
         {
-            var staffaccount = _context.Users.Where(t => t.Roles.Any(y => y.RoleId == "2")).ToList();
+            var staffaccount = _context.Users
+                .OfType<Staff>()
+                .ToList();
 
             if (staffaccount == null)
             {
@@ -54,7 +60,9 @@ namespace WebApplication1.Controllers
         /// <returns></returns>
         public ActionResult TrainerAccountView()
         {
-            var traineraccount = _context.Users.Where(t => t.Roles.Any(y => y.RoleId == "3")).ToList();
+            var traineraccount = _context.Users
+                .OfType<Trainer>()
+                .ToList();
 
             if (traineraccount == null)
             {
@@ -86,27 +94,22 @@ namespace WebApplication1.Controllers
         public ActionResult DeleteTrainerAccount(string id)
         {
             var traineraccount = _context.Users
+                .OfType<Trainer>()
                 .SingleOrDefault(t => t.Id == id);
+
+            var trainerCourse = _context.TrainerCourses
+                .Where(t => t.TrainerId == id)
+                .ToList();
+
+            foreach (var trainer in trainerCourse)
+            {
+                _context.TrainerCourses.Remove(trainer);
+            }
 
             _context.Users.Remove(traineraccount);
 
             _context.SaveChanges();
             return RedirectToAction("TrainerAccountView");
-        }
-        /// <summary>
-        /// Delete Trainer or Staff Account
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public ActionResult DeleteAccount(string id)
-        {
-            var traineraccount = _context.Users
-                .SingleOrDefault(t => t.Id == id);
-
-            _context.Users.Remove(traineraccount);
-
-            _context.SaveChanges();
-            return RedirectToAction("Index");
         }
         /// <summary>
         /// Get elements of IdentityUser that sastifies the specific id.
@@ -118,33 +121,39 @@ namespace WebApplication1.Controllers
         {
             var staffaccount = _context.Users
                 .OfType<Staff>()
-                .SingleOrDefault(t => t.Id == id);
+                .FirstOrDefault(t => t.Id == id);
             if (staffaccount == null)
             {
                 return HttpNotFound();
             }
             var registeredacocunt = new AdminChangePassViewModel()
             {
-                Id = id,
+                Id = staffaccount.Id,
                 Email = staffaccount.Email,
             };
             return View(registeredacocunt);
         }
         [HttpPost]
-        public ActionResult EditStaffAccount(AdminChangePassViewModel adminChangePassViewModel)
+        public ActionResult EditStaffAccount(AdminChangePassViewModel model)
         {
-            var edit_infor = _context.Users
+            var staff = _context.Users
                 .OfType<Staff>()
-                .SingleOrDefault(t => t.Id == adminChangePassViewModel.Id);
+                .SingleOrDefault(t => t.Id == model.Id);
+            staff.Email = model.Email;
             if (!ModelState.IsValid)
             {
-                return View(adminChangePassViewModel);
+                
+                return View(model);
             }
-            _userManager.RemovePasswordAsync(edit_infor.Id);
-            _userManager.AddPasswordAsync(edit_infor.Id, adminChangePassViewModel.Password);
+
+            if (staff.PasswordHash != null)
+            {
+                _userManager.RemovePassword(staff.Id);
+            }
+            _userManager.AddPassword(staff.Id, model.Password);
             _context.SaveChanges();
 
-            return RedirectToAction("StaffAccountView");
+            return RedirectToAction("StaffAccountView","Admin");
         }
 
         /// <summary>
@@ -165,25 +174,33 @@ namespace WebApplication1.Controllers
 
             var registermodel = new AdminChangePassViewModel()
             {
-                Id = id,
+                Id = traineraccount.Id,
                 Email = traineraccount.Email,
             };
             return View(registermodel);
         }
         [HttpPost]
-        public ActionResult EditTrainerAccount(AdminChangePassViewModel adminChangePassViewModel)
+        public ActionResult EditTrainerAccount(AdminChangePassViewModel model)
         {
-            var edit_infor = _context.Users
+            var trainer = _context.Users
                 .OfType<Trainer>()
-                .SingleOrDefault(t => t.Id == adminChangePassViewModel.Id);
-            if (!ModelState.IsValid)
+                .SingleOrDefault(t => t.Id == model.Id);
+            trainer.Email = model.Email;
+
+            if (!ModelState.IsValid) 
             {
-                return View(adminChangePassViewModel);
+                return View(model);
             }
-            _userManager.RemovePasswordAsync(edit_infor.Id);
-            _userManager.AddPasswordAsync(edit_infor.Id, adminChangePassViewModel.Password);
+
+            if (trainer.PasswordHash != null)
+            {
+                _userManager.RemovePassword(trainer.Id);
+            }
+            _userManager.AddPassword(trainer.Id, model.Password);
+
             _context.SaveChanges();
-            return RedirectToAction("TrainerAccountView");
+            
+            return RedirectToAction("TrainerAccountView", "Admin");
         }
     }
 }

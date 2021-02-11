@@ -1,12 +1,11 @@
 ﻿@model IEnumerable<WebApplication1.Models.Course>
 @{
-    ViewBag.Title = "CategoryView";
+    ViewBag.Title = "ViewAssignedCourses";
 }
 
-<h2>Category</h2>
+<h2>Assigned Courses</h2>
 <hr />
-@Html.ActionLink("Back to Index", "CourseView", "Staff", null, new { @class = "btn btn-default" })
-@Html.ActionLink("Create Category", "CreateCategory", "Staff", null, new { @class = "btn btn-default" })
+@Html.ActionLink("Back to Index", "Index", "Trainer", null, new { @class = "btn btn-default" })
 <br />
 <table class="table">
     <thead>
@@ -25,7 +24,7 @@
                 i++;
                 <tr>
                     <td scope="row">@i</td>
-                    <td scope="row">@item.CourseName</td>
+                    <td scope="row"><h4>@item.CourseName</h4></td>
                     <td scope="row">@item.CourseDetail</td>
                     <td scope="row">@item.Id</td>
                     <td scope="row">@item.Category.CategoryName</td>
@@ -34,3 +33,4 @@
         }
     </tbody>
 </table>
+

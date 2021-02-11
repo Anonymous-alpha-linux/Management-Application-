@@ -198,7 +198,7 @@ namespace WebApplication1.Controllers
                 if (User.IsInRole("Staff"))
                 {
                     var user = new Trainee() { 
-                        UserName = model.Email, 
+                        UserName = model.Trainee.UserName, 
                         Email = model.Email,
                         Age = model.Trainee.Age,
                         Location = model.Trainee.Location,

@@ -32,5 +32,7 @@ namespace WebApplication1.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<WebApplication1.Models.ChangeTraineeAccountAndInfor> ChangeTraineeAccountAndInfors { get; set; }
     }
 }

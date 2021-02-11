@@ -5,8 +5,14 @@
 }
 
 <h1>Trainer Detail</h1>
-
-@Html.ActionLink("Back to Index", "TrainerProfileView", "Staff", null, new { @class = "btn btn-primary" })
+@if (User.IsInRole("Staff"))
+{
+    @Html.ActionLink("Back to Index", "TrainerProfileView", "Staff", null, new { @class = "btn btn-primary" })
+}
+@if (User.IsInRole("Trainer"))
+{
+    @Html.ActionLink("Back to Index", "Index", "Trainer", null, new { @class = "btn btn-primary" })
+}
 
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -39,5 +45,8 @@
         @Model.ExorInType
     </div>
     <br />
-    @Html.ActionLink("Edit", "EditTrainerProfile", "Staff", new { @id = Model.Id }, new { @class = "btn btn-primary" })
+    @if (User.IsInRole("Staff"))
+    {
+        @Html.ActionLink("Edit", "EditTrainerProfile", "Staff", new { @id = Model.Id }, new { @class = "btn btn-primary" })
+    }
 </div>

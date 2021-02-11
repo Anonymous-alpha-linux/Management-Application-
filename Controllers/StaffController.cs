@@ -7,12 +7,14 @@ using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web;
+using System.Web.ModelBinding;
 using System.Web.Mvc;
+using System.Web.UI;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    [Authorize(Roles = "Staff")]
+    
     public class StaffController : Controller
     {
         private ApplicationDbContext _context;
@@ -29,7 +31,7 @@ namespace WebApplication1.Controllers
             );
         }
         // GET: Staff
-        
+        [Authorize(Roles = "Staff")]
         public ActionResult Index()
         {
             return View();
@@ -38,6 +40,7 @@ namespace WebApplication1.Controllers
         /// Trainer Profile Viewers
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Staff")]
         public ActionResult TrainerProfileView()
         {
             var trainers = _context.Users
@@ -50,6 +53,7 @@ namespace WebApplication1.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Staff")]
         public ActionResult EditTrainerProfile(string id)
         {
             var trainer = _context.Users
@@ -57,6 +61,7 @@ namespace WebApplication1.Controllers
                 .SingleOrDefault(t => t.Id == id);
             return View(trainer);
         }
+        [Authorize(Roles = "Staff")]
         [HttpPost]
         public ActionResult EditTrainerProfile(Trainer trainerViewModels)
         {
@@ -77,6 +82,7 @@ namespace WebApplication1.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Staff,Trainer")]
         public ActionResult DetailTrainer(string id)
         {
             var trainer = _context.Users
@@ -88,6 +94,7 @@ namespace WebApplication1.Controllers
         /// Trainee Account Viewer
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Staff")]
         public ActionResult TraineeAccountView()
         {
             var staffaccount = _context.Users
@@ -101,13 +108,21 @@ namespace WebApplication1.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        /// 
+        [Authorize(Roles = "Staff")]
         public ActionResult DeleteTraineeAccount(string id)
         {
-            var traineraccount = _context.Users
-                .SingleOrDefault(t => t.Id == id);
-
-            _context.Users.Remove(traineraccount);
-
+            var traineeaccount = _context.Users
+                .OfType<Trainee>()
+                .FirstOrDefault(t => t.Id == id);
+            var traineeCourse = _context.TraineeCourses
+                .Where(t => t.TraineeId == id)
+                .ToList();
+            _context.Users.Remove(traineeaccount);
+            foreach (var trainee in traineeCourse)
+            {
+                _context.TraineeCourses.Remove(trainee);
+            }
             _context.SaveChanges();
 
             return RedirectToAction("TraineeAccountView");
@@ -117,6 +132,8 @@ namespace WebApplication1.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        /// 
+        [Authorize(Roles = "Staff")]
         public ActionResult EditTraineeAccount(string id)
         {
             var trainee = _context.Users
@@ -135,6 +152,7 @@ namespace WebApplication1.Controllers
 
             return View(traineedetail);
         }
+        [Authorize(Roles = "Staff")]
         [HttpPost]
         public ActionResult EditTraineeAccount(ChangeTraineeAccountAndInfor changeTraineeDetaill)
         {
@@ -157,7 +175,7 @@ namespace WebApplication1.Controllers
             edit_infor.Main_programming_lang = changeTraineeDetaill.Trainee.Main_programming_lang;
 
             _userManager.RemovePassword(edit_infor.Id);
-            _userManager.AddPasswordAsync(edit_infor.Id, changeTraineeDetaill.Password);
+            _userManager.AddPassword(edit_infor.Id, changeTraineeDetaill.Password);
 
             _userManager.UpdateAsync(edit_infor);
             _context.SaveChanges();
@@ -176,6 +194,8 @@ namespace WebApplication1.Controllers
         /// View Categories
         /// </summary>
         /// <returns></returns>
+        ///
+        [Authorize(Roles = "Staff")]
         public ActionResult CategoryView()
         {
             var categories = _context.Categories.ToList();
@@ -185,10 +205,13 @@ namespace WebApplication1.Controllers
         /// Create Category
         /// </summary>
         /// <returns></returns>
+        /// 
+        [Authorize(Roles = "Staff")]
         public ActionResult CreateCategory()
         {
             return View();
         }
+        [Authorize(Roles = "Staff")]
         [HttpPost]
         public ActionResult CreateCategory(Category createCategoryViewModel)
         {
@@ -203,11 +226,13 @@ namespace WebApplication1.Controllers
             _context.SaveChanges();
             return RedirectToAction("CreateCategory", "Staff");
         }
+        [Authorize(Roles = "Staff")]
         public ActionResult EditCategory(int id)
         {
             var category = _context.Categories.FirstOrDefault(t => t.Id == id);
             return View(category);
         }
+        [Authorize(Roles = "Staff")]
         [HttpPost]
         public ActionResult EditCategory(Category categoryViewModel)
         {
@@ -224,6 +249,7 @@ namespace WebApplication1.Controllers
             _context.SaveChanges();
             return RedirectToAction("CategoryView","Staff");
         }
+        [Authorize(Roles = "Staff")]
         public ActionResult DeleteCategory(int id)
         {
             var category = _context.Categories.FirstOrDefault(t => t.Id == id);
@@ -235,6 +261,8 @@ namespace WebApplication1.Controllers
         /// Course Viewer
         /// </summary>
         /// <returns></returns>
+        /// 
+        [Authorize(Roles = "Staff,Trainee")]
         public ActionResult CourseView()
         {
             if (!ModelState.IsValid)
@@ -252,6 +280,9 @@ namespace WebApplication1.Controllers
         /// Create Course 
         /// </summary>
         /// <returns></returns>
+        /// 
+
+        [Authorize(Roles = "Staff")]
         public ActionResult CreateCourse()
         { 
             var model = new CreateCourseViewModel()
@@ -260,6 +291,8 @@ namespace WebApplication1.Controllers
             };
             return View(model);
         }
+
+        [Authorize(Roles = "Staff")]
         [HttpPost]
         public ActionResult CreateCourse(CreateCourseViewModel model)
         {
@@ -272,6 +305,8 @@ namespace WebApplication1.Controllers
             _context.SaveChanges();
             return RedirectToAction("CourseView","Staff");
         }
+
+        [Authorize(Roles = "Staff")]
         public ActionResult DeleteCourse(int id)
         {
             var removedCourse = _context.Courses.SingleOrDefault(t => t.Id == id);
@@ -279,6 +314,8 @@ namespace WebApplication1.Controllers
             _context.SaveChanges();
             return RedirectToAction("CourseView","Staff");
         }
+
+        [Authorize(Roles = "Staff")]
         public ActionResult EditCourse(int id)
         {
             var course = _context.Courses.SingleOrDefault(t => t.Id == id);
@@ -290,6 +327,8 @@ namespace WebApplication1.Controllers
             };
             return View(model);
         }
+
+        [Authorize(Roles = "Staff")]
         [HttpPost]
         public ActionResult EditCourse(CreateCourseViewModel model)
         {
@@ -302,24 +341,25 @@ namespace WebApplication1.Controllers
             return RedirectToAction("CourseView", "Staff");
         }
 
+        [Authorize(Roles = "Staff,Trainee")]
         public ActionResult DetailCourse(int id)
         {
-            var trainees = _context.TraineeCourses
-                .Where(t => t.CourseId == id)
-                .Select(t=>t.Trainee)
-                .ToList();
-            var trainer = _context.TrainerCourses
-                .Where(t => t.CourseId == id)
-                .Select(t => t.Trainer)
-                .Single();
-            var course = new CourseViewModel()
-            {
-                Course = _context.Courses
-                .Include(t=>t.Category)
-                .SingleOrDefault(t=>t.Id == id),
-                Trainees = trainees,
-                Trainer = trainer,
-            };
+            var trainerNoNull = _context.TrainerCourses
+                .Any(t => t.CourseId == id);
+            var traineeNoNull = _context.TraineeCourses
+                .Any(t => t.CourseId == id);
+            var course = new CourseViewModel();
+            course.CourseId = id;
+            course.Course = _context.Courses.Include(t=>t.Category).SingleOrDefault(t => t.Id == id);
+            if (trainerNoNull) 
+                course.Trainer = _context.TrainerCourses
+                    .Include(t=>t.Trainer)
+                    .SingleOrDefault(t => t.CourseId == id);
+            if (traineeNoNull) 
+                course.Trainees = _context.TraineeCourses
+                    .Where(t => t.CourseId == id)
+                    .Include(t=>t.Trainee)
+                    .ToList();
             return View(course);
         }
         /// <summary>
@@ -327,6 +367,8 @@ namespace WebApplication1.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        /// 
+        [Authorize(Roles = "Staff")]
         public ActionResult AssignCourseToTrainer(int id)
         {
             var trainercourses = new AssignTrainerViewModel()
@@ -337,6 +379,7 @@ namespace WebApplication1.Controllers
             };
             return View(trainercourses);
         }
+        [Authorize(Roles = "Staff")]
         [HttpPost]
         public ActionResult AssignCourseToTrainer(AssignTrainerViewModel model)
         {
@@ -348,7 +391,7 @@ namespace WebApplication1.Controllers
                 old_trainer.CourseId = model.CourseId;
                 old_trainer.TrainerId = model.TrainerId;
                 _context.SaveChanges();
-                return RedirectToAction("CourseView", "Staff");
+                return RedirectToAction("DetailCourse", "Staff",new { @id = model.CourseId});
             }
 
             var assignCourse = new TrainerCourses();
@@ -359,7 +402,7 @@ namespace WebApplication1.Controllers
             _context.TrainerCourses.Add(assignCourse);
             
             _context.SaveChanges();
-            return RedirectToAction("CourseView", "Staff");
+            return RedirectToAction("DetailCourse", "Staff", new { @id = model.CourseId });
         }
 
         /// <summary>
@@ -367,6 +410,8 @@ namespace WebApplication1.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        /// 
+        [Authorize(Roles = "Staff")]
         public ActionResult AssignCourseToTrainee(int id)
         {
             var traineecourses = new AssignTraineeViewModel()
@@ -377,42 +422,39 @@ namespace WebApplication1.Controllers
             };
             return View(traineecourses);
         }
+        [Authorize(Roles = "Staff")]
         [HttpPost]
-        public ActionResult AssignCourseToTrainee(AssignTraineeViewModel model)
+        public ActionResult AssignCourseToTrainee(int CourseId, AssignTraineeViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            if(_context.TraineeCourses
-                .Where(t=>t.CourseId == model.CourseId)
-                .Any(t=>t.TraineeId == model.TraineeId))
-            {
-                ModelState.AddModelError("Validation", "This trainee has been assigned to before"); 
-                return View(model);
-            }
-
             var assignCourse = new TraineeCourses();
             assignCourse.CourseId = model.CourseId;
             assignCourse.TraineeId = model.TraineeId;
-
-            _context.TraineeCourses.AddOrUpdate(assignCourse);
-            _context.SaveChanges();
+            if (!_context.TraineeCourses
+                .Where(t => t.CourseId == model.CourseId)
+                .Select(t=>t.TraineeId)
+                .Contains(model.TraineeId))
+            {
+                _context.TraineeCourses.AddOrUpdate(assignCourse);
+                _context.SaveChanges();
+                ViewBag.Message = "Assign successfully";
+            }
+            else
+            {
+                ViewBag.Message = "This trainee has been assigned to this course before!!";
+                return RedirectToAction("AssignCourseToTrainee", "Staff", new { @id = CourseId});
+            }
 
             return RedirectToAction("CourseView", "Staff");
         }
-
-        public ActionResult ResignTraineeFromCourse(string traineeId,CourseViewModel model)
+        [Authorize(Roles = "Staff")]
+        public ActionResult ResignTraineeFromCourse(int id)
         {
-
-            var traineeCourse = _context.TraineeCourses
-                .Where(t => t.CourseId == model.Course.Id)
-                .SingleOrDefault(t => t.TraineeId == traineeId);
-
-            _context.TraineeCourses.Remove(traineeCourse);
-
+            var traineeCourses = _context.TraineeCourses
+                .SingleOrDefault(t => t.Id == id);
+            _context.TraineeCourses.Remove(traineeCourses);
             _context.SaveChanges();
-            return RedirectToAction("DetailCourse","Staff",new { @id = model.Course.Id});
+
+            return RedirectToAction("DetailCourse", "Staff", new { @id = traineeCourses.CourseId});
         }
     }
 

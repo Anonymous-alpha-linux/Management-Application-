@@ -10,13 +10,13 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    [Authorize(Roles = "Trainer")]
-    public class TrainerController : Controller
+    [Authorize(Roles = "Trainee")]
+    public class TraineeController : Controller
     {
         private ApplicationDbContext _context;
         private ApplicationUser _user;
         private UserManager<ApplicationUser> _userManager;
-        public TrainerController()
+        public TraineeController()
         {
             _context = new ApplicationDbContext();
 
@@ -26,35 +26,41 @@ namespace WebApplication1.Controllers
                 new UserStore<ApplicationUser>(new ApplicationDbContext())
             );
         }
-        // GET: Trainer
+        // GET: Trainee
         public ActionResult Index()
         {
-            return View();
+            return View(_context.Courses.ToList());
         }
-
         public ActionResult UpdateDetails()
         {
             var currentUserId = User.Identity.GetUserId();
 
-            var trainerDetail = _context.Users
-                .OfType<Trainer>()
+            var traineeDetail = _context.Users
+                .OfType<Trainee>()
                 .SingleOrDefault(t => t.Id == currentUserId);
 
-            return View(trainerDetail);
+            return View(traineeDetail);
         }
         [HttpPost]
-        public ActionResult UpdateDetails(Trainer trainerInput)
+        public ActionResult UpdateDetails(Trainee traineeInput)
         {
             var currentUserId = User.Identity.GetUserId();
 
-            var trainerDetail = _context.Users
-                .OfType<Trainer>()
+            var traineeDetail = _context.Users
+                .OfType<Trainee>()
                 .SingleOrDefault(t => t.Id == currentUserId);
 
-            trainerDetail.UserName = trainerInput.UserName;
-            trainerDetail.Working_Address = trainerInput.Working_Address;
-            trainerDetail.Education = trainerInput.Education;
-            trainerDetail.PhoneNumber = trainerInput.PhoneNumber;
+            traineeDetail.UserName = traineeInput.UserName;
+            traineeDetail.Age = traineeInput.Age;
+            traineeDetail.Education = traineeInput.Education;
+            traineeDetail.PhoneNumber = traineeInput.PhoneNumber;
+            traineeDetail.Date_of_birth = traineeInput.Date_of_birth;
+            traineeDetail.Department = traineeInput.Department;
+            traineeDetail.Exp_details = traineeInput.Exp_details;
+            traineeDetail.Location = traineeInput.Location;
+            traineeDetail.Main_programming_lang = traineeInput.Main_programming_lang;
+            traineeDetail.TOEIC_score = traineeInput.TOEIC_score;
+
 
             _context.SaveChanges();
 
@@ -64,8 +70,8 @@ namespace WebApplication1.Controllers
         {
             var currentUserId = User.Identity.GetUserId();
 
-            var assignedCourse = _context.TrainerCourses
-                .Where(t => t.TrainerId == currentUserId)
+            var assignedCourse = _context.TraineeCourses
+                .Where(t => t.TraineeId == currentUserId)
                 .Select(t => t.Course)
                 .Include(t=>t.Category)
                 .ToList();

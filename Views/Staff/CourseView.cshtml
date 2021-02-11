@@ -8,7 +8,7 @@
 @Html.ActionLink("Create Category", "CreateCategory", "Staff", null, new { @class = "btn btn-default" })
 @Html.ActionLink("View Category", "CategoryView", "Staff", null, new { @class = "btn btn-default" })
 <hr />
-
+@Html.Label("Searching By Name")
 @Html.TextBox("searchString", "Course", new { @class = "form-control" })
 <table class="table">
     <thead>
@@ -31,7 +31,6 @@
                     <td scope="row">@item.CourseDetail</td>
                     <td scope="row">
                         @item.Category.CategoryName
-                        <span>@Html.ActionLink("x", "RemoveCategoryFromCourse", "Staff", new { @id = item.Category.Id }, new { @class = "badge" })</span>
                     </td>
                     <td scope="row">
                         @Html.ActionLink("Delete", "DeleteCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-danger" })

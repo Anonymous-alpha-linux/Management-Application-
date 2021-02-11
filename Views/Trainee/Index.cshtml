@@ -1,0 +1,10 @@
+﻿@model IEnumerable<WebApplication1.Models.Course>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Welcome @User.Identity.Name</h2>
+
+@{  
+    Html.RenderAction("CourseView", "Staff");
+}}

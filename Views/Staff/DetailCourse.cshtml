@@ -48,7 +48,7 @@
 
     <div class="panel-body">
         @Html.Label("Trainee List:")
-        @if (Model.Trainees.Count > 0)
+        @if (Model.Trainees != null)
         {
             foreach (var trainee in Model.Trainees)
             {
@@ -63,9 +63,7 @@
         }
         else
         {
-            <button type="button" class="btn btn-success">
                 @Html.ActionLink("Add Trainee", "AssignCourseToTrainee", "Staff", new { @id = Model.CourseId }, new { @class = "btn btn-default" })
-            </button>
         }
     </div>
     <br />

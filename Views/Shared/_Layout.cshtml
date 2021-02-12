@@ -92,11 +92,11 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    @Html.ActionLink("Management", "Index", "Trainee", new { area = "" }, new { @class = "navbar-brand" })
+                    @Html.ActionLink(User.Identity.Name, "Index", "Trainee", new { area = "" }, new { @class = "navbar-brand col-sm-6 col-md-4" })
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li>@Html.ActionLink("Assigned Course For Trainee", "AssignedCourses", "Trainee")</li>
+                        <li><a href="#viewAssignedCourses">Assigned Courses</a></li>
                     </ul>
                     @Html.Partial("_LoginPartial")
                 </div>

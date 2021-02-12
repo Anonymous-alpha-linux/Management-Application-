@@ -136,7 +136,7 @@ namespace WebApplication1.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin,Staff")]
         public ActionResult Register()
         {
             var registerViewModel = new RegisterViewModel()
@@ -149,7 +149,7 @@ namespace WebApplication1.Controllers
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin,Staff")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {

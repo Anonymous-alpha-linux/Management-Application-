@@ -13,6 +13,8 @@
 @using (Html.BeginForm("EditTrainerAccount", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
+    @Html.ValidationMessage("ERROR", new { @class = "card-alert alert alert-danger v-message", @style = "display: none;" })
+    @Html.ValidationMessage("SUCCESS", new { @class = "card-alert alert alert-success v-message", @style = "display: none;" })
 
     <div class="form-horizontal">
         <hr />
@@ -47,4 +49,7 @@
             </div>
         </div>
     </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
 }

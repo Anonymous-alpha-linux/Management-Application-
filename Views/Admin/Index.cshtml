@@ -3,10 +3,12 @@
     ViewBag.Title = "Index";
 }
 
-<h1>Welcome Admin</h1>
+<h1 style="font-weight:bold">Welcome Admin</h1>
+<h4 style="font-style:italic">HR Department Account</h4>
 <br />
 @Html.ActionLink("Create new user", "Register", "Account", routeValues: null, htmlAttributes: new { @class = "btn btn-default btn-sm" })
-
+<br />
+<hr />
 <table class="table">
     <thead>
         <tr>
@@ -20,7 +22,6 @@
         @{int i = 0;
             foreach (var item in Model)
             {
-
                 i++;
                 <tr>
                     <td scope="row">@i</td>

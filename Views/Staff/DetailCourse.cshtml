@@ -35,7 +35,7 @@
         @if (Model.Trainer != null)
         {
             <button type="button" class="btn btn-success">
-                @Html.ActionLink(Model.Trainer.Trainer.UserName, "DetailTrainer", "Staff", new { @id = Model.Trainer.Id }, new { @class = "text-default" })
+                @Html.ActionLink(Model.Trainer.Trainer.UserName, "DetailTrainer", "Staff", new { @id = Model.Trainer.Trainer.Id }, new { @class = "text-default" })
             </button>
         }
         else

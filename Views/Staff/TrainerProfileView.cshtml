@@ -3,8 +3,18 @@
     ViewBag.Title = "Trainer Profile List";
 }
 
-<h1>Trainer Profile List</h1>
-
+<h1 style="font-weight:bold">Trainer Profile List</h1>
+<h5 style="font-style:italic;">Trainer Profile Management</h5>
+<hr />
+<div class="search-part">
+    @using (Html.BeginForm("TrainerProfileView", "Staff", FormMethod.Post))
+    {
+        @Html.Label("Searching By Name:", new { @style = "margin: 4px; display:block" })
+        @Html.TextBox("searchString", "", new { @class = "form-control", @style = "margin: 4px; display:inline" })
+        <button type="submit" class="btn btn-primary">Search</button>
+    }
+</div>
+<hr />
 <table class="table">
     <thead>
         <tr>

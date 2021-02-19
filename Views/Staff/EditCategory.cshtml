@@ -1,29 +1,35 @@
 ﻿@model WebApplication1.Models.Category
-
 @{
-    ViewBag.Title = "Edit Category";
+    ViewBag.Title = "EditCategory";
 }
 
-<h2>@ViewBag.Title</h2>
+<h2>Edit Category</h2>
+<h5>Change Category Name</h5>
 <hr />
-@Html.ActionLink("Back To Category List", "CategoryView","Staff",null,new {@class = "btn btn-default"})
-<br />
 @using (Html.BeginForm("EditCategory", "Staff", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    <h4>Edit Category.</h4>
-    <hr />
     @Html.ValidationSummary("", new { @class = "text-danger" })
+
+    @Html.HiddenFor(t => t.Id, new { @type = "hidden" })
+
     <div class="form-group">
-        @Html.LabelFor(m => m, new { @class = "col-md-2 control-label" })
+        @Html.Label("Category Name", new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.CategoryName, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "tẽ" })
+            @Html.EditorFor(m => m.CategoryName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Edit" />
+        @Html.Label("Description", new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10" style="margin-top:20px">
+            <input type="submit" class="btn btn-primary pull-left" style="margin-top=20px" value="Update" />
         </div>
     </div>
 }

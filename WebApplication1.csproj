@@ -315,11 +315,20 @@
     <Compile Include="Migrations\202102070803034_UpdateWholeDbWithNewProp.Designer.cs">
       <DependentUpon>202102070803034_UpdateWholeDbWithNewProp.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202102140521238_ModifyModel.cs" />
+    <Compile Include="Migrations\202102140521238_ModifyModel.Designer.cs">
+      <DependentUpon>202102140521238_ModifyModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102190725535_AddDescriptionofCategory.cs" />
+    <Compile Include="Migrations\202102190725535_AddDescriptionofCategory.Designer.cs">
+      <DependentUpon>202102190725535_AddDescriptionofCategory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\CourseViewModel.cs" />
+    <Compile Include="Models\CreateCategoryViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Staff.cs" />
@@ -342,7 +351,9 @@
     <Content Include="imgs\download.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
+    <Content Include="Scripts\site.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
@@ -401,7 +412,6 @@
     <Content Include="Views\Staff\CourseView.cshtml" />
     <Content Include="Views\Staff\CreateCategory.cshtml" />
     <Content Include="Views\Staff\CategoryView.cshtml" />
-    <Content Include="Views\Staff\EditCategory.cshtml" />
     <Content Include="Views\Staff\CreateCourse.cshtml" />
     <Content Include="Views\Staff\EditCourse.cshtml" />
     <Content Include="Views\Staff\AssignTrainer.cshtml" />
@@ -416,6 +426,8 @@
     <Content Include="Views\Trainer\Index.cshtml" />
     <Content Include="Views\Trainee\ViewAssignedCourses.cshtml" />
     <Content Include="Views\Trainee\Index.cshtml" />
+    <Content Include="Views\Staff\_EditCategoryModelPartial.cshtml" />
+    <Content Include="Views\Staff\EditCategory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -451,6 +463,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202102070803034_UpdateWholeDbWithNewProp.resx">
       <DependentUpon>202102070803034_UpdateWholeDbWithNewProp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102140521238_ModifyModel.resx">
+      <DependentUpon>202102140521238_ModifyModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102190725535_AddDescriptionofCategory.resx">
+      <DependentUpon>202102190725535_AddDescriptionofCategory.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

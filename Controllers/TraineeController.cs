@@ -30,7 +30,9 @@ namespace WebApplication1.Controllers
         // GET: Trainee
         public ActionResult Index()
         {
-            return View(_context.Courses.Include(t=>t.Category).ToList());
+            var courses = _context.Courses.Include(t => t.Category).ToList();
+            
+            return View(courses);
         }
         public ActionResult UpdateDetails()
         {
@@ -74,7 +76,7 @@ namespace WebApplication1.Controllers
             var assignedCourse = _context.TraineeCourses
                 .Where(t => t.TraineeId == currentUserId)
                 .Select(t => t.Course)
-                .Include(t=>t.Category)
+                .Include(t => t.Category)
                 .ToList();
 
             return View(assignedCourse);

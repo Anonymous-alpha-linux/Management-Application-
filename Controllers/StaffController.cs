@@ -42,11 +42,18 @@ namespace WebApplication1.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "Staff")]
-        public ActionResult TrainerProfileView()
+        public ActionResult TrainerProfileView(string searchString)
         {
             var trainers = _context.Users
                 .OfType<Trainer>()
+                .Where(t=>t.UserName.Contains(searchString))
                 .ToList();
+            if (String.IsNullOrEmpty(searchString))
+            {
+                trainers = _context.Users
+                .OfType<Trainer>()
+                .ToList();
+            }
             return View(trainers);
         }
         /// <summary>
@@ -96,12 +103,52 @@ namespace WebApplication1.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "Staff")]
-        public ActionResult TraineeAccountView()
+        public ActionResult TraineeAccountView(string searchString,string option)
         {
             var staffaccount = _context.Users
+                    .OfType<Trainee>()
+                    .ToList();
+            if (option == "Name") {
+                 staffaccount = _context.Users
+                    .OfType<Trainee>()
+                    .Where(t => t.UserName.Contains(searchString))
+                    .ToList();
+            }
+            if (option == "TOEIC")
+            {
+                 staffaccount = _context.Users
+                    .OfType<Trainee>()
+                    .Where(t => t.TOEIC_score.ToString().StartsWith(searchString))
+                    .ToList();
+            }
+            if (option == "Programming Language")
+            {
+                 staffaccount = _context.Users
+                    .OfType<Trainee>()
+                    .Where(t => t.Main_programming_lang.Contains(searchString))
+                    .ToList();
+            }
+            if (option == "Email")
+            {
+                staffaccount = _context.Users
+                   .OfType<Trainee>()
+                   .Where(t => t.Email.Contains(searchString))
+                   .ToList();
+            }
+            if (option == "Age")
+            {
+                staffaccount = _context.Users
+                   .OfType<Trainee>()
+                   .Where(t => t.Age.ToString().Equals(searchString))
+                   .ToList();
+            }
+            if (String.IsNullOrEmpty(searchString))
+            {
+                staffaccount = _context.Users
                 .OfType<Trainee>()
                 .ToList();
-
+            }
+            
             return View(staffaccount);
         }
         /// <summary>
@@ -203,7 +250,11 @@ namespace WebApplication1.Controllers
         public ActionResult CategoryView()
         {
             var categories = _context.Categories.ToList();
-            return View(categories);
+            var createCategoryViewModel = new CreateCategoryViewModel()
+            {
+                Categories = categories,
+            };
+            return View(createCategoryViewModel);
         }
         /// <summary>
         /// Create Category
@@ -228,29 +279,35 @@ namespace WebApplication1.Controllers
             _context.Categories.Add(createCategoryViewModel);
             
             _context.SaveChanges();
-            return RedirectToAction("CreateCategory", "Staff");
+            return RedirectToAction("CategoryView", "Staff");
         }
         [Authorize(Roles = "Staff")]
         public ActionResult EditCategory(int id)
         {
             var category = _context.Categories.FirstOrDefault(t => t.Id == id);
+
             return View(category);
         }
-        [Authorize(Roles = "Staff")]
         [HttpPost]
-        public ActionResult EditCategory(Category categoryViewModel)
+        [Authorize(Roles = "Staff")]
+        public ActionResult EditCategory(Category item)
         {
-            var categories = _context.Categories.ToList();
-            var category = _context.Categories.FirstOrDefault(t=>t.Id == categoryViewModel.Id);
+            var category = _context.Categories.Where(t => t.Id == item.Id).FirstOrDefault();
             
-            if (categories.Any(m => m.CategoryName == categoryViewModel.CategoryName))
+            if (_context.Categories.Any(m => m.CategoryName == item.CategoryName && m.CategoryName != category.CategoryName))
             {
                 ModelState.AddModelError("Validation", "Unable to save this value. The database entity exists in the database.");
-                return View();
+                return View(category);
             }
-            category.CategoryName = categoryViewModel.CategoryName;
-            
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("Detected fault","Cannot Update this value");
+                return View(category);
+            }
+            category.CategoryName = item.CategoryName;
+            category.Description = item.Description;
             _context.SaveChanges();
+
             return RedirectToAction("CategoryView","Staff");
         }
         [Authorize(Roles = "Staff")]
@@ -267,16 +324,23 @@ namespace WebApplication1.Controllers
         /// <returns></returns>
         /// 
         [Authorize(Roles = "Staff,Trainee")]
-        public ActionResult CourseView()
+        public ActionResult CourseView(string searchString)
         {
             if (!ModelState.IsValid)
             {
                 return HttpNotFound();
             }
-
             var courses = _context.Courses
-                .Include(t=>t.Category)
+               .Where(t => t.CourseName.Contains(searchString))
+               .Include(t => t.Category)
+               .ToList();
+
+            if (String.IsNullOrEmpty(searchString))
+            {
+                courses = _context.Courses
+                .Include(t => t.Category)
                 .ToList();
+            }
 
             return View(courses);
         }

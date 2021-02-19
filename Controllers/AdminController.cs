@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using WebApplication1.Models;
@@ -109,7 +110,8 @@ namespace WebApplication1.Controllers
 
             _context.Users.Remove(traineraccount);
 
-            _context.SaveChanges();
+            var result = _context.SaveChanges();
+
             return RedirectToAction("TrainerAccountView");
         }
         /// <summary>
@@ -140,10 +142,18 @@ namespace WebApplication1.Controllers
             var staff = _context.Users
                 .OfType<Staff>()
                 .SingleOrDefault(t => t.Id == model.Id);
+            if (_context.Users
+                .OfType<Staff>()
+                .ToList()
+                .Any(t => t.Email == model.Email))
+            {
+                ModelState.AddModelError("Email", "This email has registered before");
+            }
+
             staff.Email = model.Email;
             if (!ModelState.IsValid)
             {
-                
+
                 return View(model);
             }
 
@@ -154,7 +164,7 @@ namespace WebApplication1.Controllers
             _userManager.AddPassword(staff.Id, model.Password);
             _context.SaveChanges();
 
-            return RedirectToAction("StaffAccountView","Admin");
+            return RedirectToAction("StaffAccountView", "Admin");
         }
 
         /// <summary>
@@ -188,8 +198,9 @@ namespace WebApplication1.Controllers
                 .SingleOrDefault(t => t.Id == model.Id);
             trainer.Email = model.Email;
 
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
+                ModelState.AddModelError("", "");
                 return View(model);
             }
 
@@ -200,68 +211,10 @@ namespace WebApplication1.Controllers
             _userManager.AddPassword(trainer.Id, model.Password);
 
             _context.SaveChanges();
-            
+
+
             return RedirectToAction("TrainerAccountView", "Admin");
         }
-
-        #region Helpers
-        // Used for XSRF protection when adding external logins
-        private const string XsrfKey = "XsrfId";
-
-        private IAuthenticationManager AuthenticationManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().Authentication;
-            }
-        }
-
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error);
-            }
-        }
-
-        private ActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-            return RedirectToAction("Index", "Home");
-        }
-
-        internal class ChallengeResult : HttpUnauthorizedResult
-        {
-            public ChallengeResult(string provider, string redirectUri)
-                : this(provider, redirectUri, null)
-            {
-            }
-
-            public ChallengeResult(string provider, string redirectUri, string userId)
-            {
-                LoginProvider = provider;
-                RedirectUri = redirectUri;
-                UserId = userId;
-            }
-
-            public string LoginProvider { get; set; }
-            public string RedirectUri { get; set; }
-            public string UserId { get; set; }
-
-            public override void ExecuteResult(ControllerContext context)
-            {
-                var properties = new AuthenticationProperties { RedirectUri = RedirectUri };
-                if (UserId != null)
-                {
-                    properties.Dictionary[XsrfKey] = UserId;
-                }
-                context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
-            }
-        }
-        #endregion
 
     }
 }

@@ -2,20 +2,43 @@
 @model IEnumerable<WebApplication1.Models.Trainee>
 @{
     ViewBag.Title = "TraneeAccountView";
+    List<string> properties = new List<string>() { "Name", "TOEIC", "Programming Language","Email", "Age" };
 }
-<h1>Trainee Accounts</h1>
+<h1 style="font-weight:bold">Trainee Accounts</h1>
+<h5 style="font-style:italic" class="">Trainee account management</h5>
 <hr />
-
-@Html.ActionLink("Create new trainee", "Register", "Account", routeValues: null, htmlAttributes: new { id = "btn btn-primary" })
-<br />
+<div class="row">
+    <div class="col-md-4">
+        @Html.ActionLink("Create new trainee", "Register", "Account", routeValues: null, htmlAttributes: new { @class = "btn btn-default", @style = "margin: 4px;" })
+    </div>
+    <div class="search-part col-md-8">
+        @using (Html.BeginForm("TraineeAccountView", "Staff", FormMethod.Post, htmlAttributes: new { @style = "margin: 4px;float:left" }))
+        {
+            @Html.Label("Searching By", new { @style = "margin: 4px;font-display:auto" })
+        <div class="row">
+            @foreach (string prop in properties)
+            {
+            <div class="col-md-6" style="display:block;width:120px;margin-left:10px;margin-right:10px">
+                @Html.RadioButton("option", prop, false, new { @style = "margin-right:12px;" })
+                @Html.DisplayName(prop)
+            </div>
+            }
+        </div>
+        <div class="submit col-lg-push-4" style="display:inline-flex">
+            @Html.TextBox("searchString", "", new { @class = "form-control", @style = "margin: 4px; display:inline;width:100%" })
+            <button type="submit" class="btn btn-primary btn-xs" style="justify-items:flex-start">Search</button>
+        </div>
+        }
+    </div>
+</div>
 <table class="table">
     <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">User Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Department</td>
-            <th scope="col">Action</th>
+        <tr class="row">
+            <th scope="col" class="col-md-1">#</th>
+            <th scope="col" class="col-md-2">User Name</th>
+            <th scope="col" class="col-md-2">Email</th>
+            <th scope="col" class="col-md-3">Department</td>
+            <th scope="col" class="col-md-4">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -23,12 +46,12 @@
             foreach (var item in Model)
             {
                 i++;
-                <tr>
-                    <td scope="row">@i</td>
-                    <td scope="row">@item.UserName</td>
-                    <td scope="row">@item.Email</td>
-                    <td scope="row">@item.Department</td>
-                    <td scope="row">
+                <tr class="row">
+                    <td scope="row" class="col-md-1">@i</td>
+                    <td scope="row" class="col-md-2">@item.UserName</td>
+                    <td scope="row" class="col-md-2">@item.Email</td>
+                    <td scope="row" class="col-md-3">@item.Department</td>
+                    <td scope="row" class="col-md-4">
                         @Html.ActionLink("Delete", "DeleteTraineeAccount", "Staff", new { @id = item.Id }, new { @class = "btn btn-danger" })
                         @Html.ActionLink("Edit Trainee", "EditTraineeAccount", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
                         @Html.ActionLink("Trainee Details", "TraineeDetails", "Staff", new { @id = item.Id }, new { @class = "btn btn-primary" })

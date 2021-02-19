@@ -3,9 +3,10 @@
     ViewBag.Title = "TrainerAccountView";
 }
 
-<h2>Trainer Account</h2>
+<h1 style="font-weight:bold">Trainer Account</h1>
+<h5 style="font-style:italic">Trainer Account Management</h5>
 <br />
-@Html.ActionLink("Create new user", "Register", "Account", routeValues: null, htmlAttributes: new { @class = "btn btn-default btn-sm" })
+@Html.ActionLink("Create new user", "Register", "Account", routeValues: null, htmlAttributes: new { @class = "btn btn-default btn-sm", @style = "margin-bottom: 10px" })
 <br />
 <table class="table">
     <thead>

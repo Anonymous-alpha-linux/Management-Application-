@@ -1,14 +1,19 @@
 ﻿@model WebApplication1.Models.ApplicationUser
 @{
     ViewBag.Title = "Home Page";
-    
+
 }
 
+
 @if (!Request.IsAuthenticated)
-{
-    <h1>
-        Welcome to our Management Application
-    </h1>
+{<div class="row">
+        <div class="col-md-4">
+            <h1 style="font-weight:bold">
+                Welcome to our Management Application
+            </h1>
+        </div>
+    </div>
+
 }
 @if (User.IsInRole("Admin"))
 {
@@ -27,7 +32,7 @@
 }
 @if (User.IsInRole("Trainee"))
 {
-    Html.RenderAction("Index","Trainee");
+    Html.RenderAction("Index", "Trainee");
     Layout = null;
 }
 

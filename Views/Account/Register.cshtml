@@ -10,6 +10,7 @@
 {
     <h4>Create a new account.</h4>
     <hr />
+    @Html.AntiForgeryToken()
     @Html.ValidationSummary("", new { @class = "text-danger" })
     <div class="form-group">
         @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
@@ -44,7 +45,7 @@
         <div class="form-group">
             @Html.LabelFor(m => m.Trainee.Age, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
-                @Html.TextBoxFor(m=>m.Trainee.Age, new { @class = "form-control" })
+                @Html.TextBoxFor(m => m.Trainee.Age, new { @class = "form-control",@type = "number" })
                 @Html.ValidationMessageFor(model => model.Trainee.Age)
             </div>
         </div>
@@ -58,7 +59,7 @@
         <div class="form-group">
             @Html.LabelFor(m => m.Trainee.Date_of_birth, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Trainee.Date_of_birth, new { @class = "form-control", @type = "date" ,})
+                @Html.TextBoxFor(m => m.Trainee.Date_of_birth, new { @class = "form-control", @type = "date", })
                 @Html.ValidationMessageFor(model => model.Trainee.Date_of_birth, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -104,16 +105,16 @@
             @Html.LabelFor(m => m.RoleName, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
                 @Html.DropDownListFor(m => m.RoleName, new SelectList(Model.Roles), new { @class = "dropdown" })
+                @Html.ValidationMessageFor(model => model.RoleName);
             </div>
         </div>
     }
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Create" />
+            <input type="submit" class="btn btn-default" value="Create" onclick="alert('@ViewData["PostState"]')"/>
         </div>
     </div>
 }
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

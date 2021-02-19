@@ -3,15 +3,10 @@
 @{
     ViewBag.Title = "Trainer detail";
 }
-
-<h1>Trainer Detail</h1>
 @if (User.IsInRole("Staff"))
 {
+    <h1>Trainer Detail</h1>
     @Html.ActionLink("Back to Index", "TrainerProfileView", "Staff", null, new { @class = "btn btn-primary" })
-}
-@if (User.IsInRole("Trainer"))
-{
-    @Html.ActionLink("Back to Index", "Index", "Trainer", null, new { @class = "btn btn-primary" })
 }
 
 <div class="panel panel-default">

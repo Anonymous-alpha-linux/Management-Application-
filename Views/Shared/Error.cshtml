@@ -3,7 +3,31 @@
 @{
     ViewBag.Title = "Error";
 }
+@if (!User.Identity.IsAuthenticated)
+{
+    <h1 class="text-danger">Error.</h1>
+    <h2 class="text-danger">An error occurred while processing your request.</h2>
+}
+else
+{
+    if (User.IsInRole("Admin"))
+    {
+        Html.ActionLink("Back", "Index", "Admin", null, new { @class = "text-primary" });
+    }
+    if (User.IsInRole("Staff"))
+    {
+        Html.ActionLink("Back", "Index", "Staff", null, new { @class = "text-primary" });
+    }
+    if (User.IsInRole("Trainer"))
+    {
+        Html.ActionLink("Back", "Index", "Trainer", null, new { @class = "text-primary" });
+    }
+    if (User.IsInRole("Trainee"))
+    {
+        Html.ActionLink("Back", "Index", "Trainee", null, new { @class = "text-primary" });
+    }
+    <h1 class="text-danger">Error.</h1>
+    <h2 class="text-danger">This account has been registered before</h2>
+}
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
 

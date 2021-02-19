@@ -66,6 +66,7 @@ namespace WebApplication1.Controllers
             var userId = User.Identity.GetUserId();
             var model = new IndexViewModel
             {
+                UserId = userId,
                 HasPassword = HasPassword(),
                 PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
                 TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),

@@ -2,9 +2,12 @@
 @{
     ViewBag.Title = "Trainee Details";
 }
-<h1>Trainee Details</h1>
-@Html.ActionLink("Back to Index", "TraineeAccountView", "Staff", null, new { @class = "btn btn-primary" })
-
+@if (User.IsInRole("Staff"))
+{
+    <h1>Trainee Details</h1>
+    @Html.ActionLink("Back to Index", "TraineeAccountView", "Staff", null, new { @class = "btn btn-primary" ,@style = "margin-bottom: 20px"})
+    <br />
+}
 <div class="panel panel-default">
     <div class="panel-heading">
         @Html.Label("User Name:")
@@ -45,5 +48,8 @@
         @Html.Label("Experience detail:")
         @Model.Exp_details
     </div>
-    @Html.ActionLink("Edit", "EditTraineeAccount", "Staff", new { @id = Model.Id }, new { @class = "btn btn-primary" })
+    @if (User.IsInRole("Staff"))
+    {
+        Html.ActionLink("Edit", "EditTraineeAccount", "Staff", new { @id = Model.Id }, new { @class = "btn btn-primary" });
+    }
 </div>

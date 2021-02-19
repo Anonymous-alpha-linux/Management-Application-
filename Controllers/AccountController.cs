@@ -18,9 +18,11 @@ namespace WebApplication1.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext _context;
 
         public AccountController()
         {
+            _context = new ApplicationDbContext();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -137,6 +139,7 @@ namespace WebApplication1.Controllers
         //
         // GET: /Account/Register
         [Authorize(Roles = "Admin,Staff")]
+        [HandleError]
         public ActionResult Register()
         {
             var registerViewModel = new RegisterViewModel()
@@ -151,14 +154,22 @@ namespace WebApplication1.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin,Staff")]
         [ValidateAntiForgeryToken]
+        [HandleError]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            
             if (ModelState.IsValid)
             {
                 if (User.IsInRole("Admin"))
                 {
+                    
                     if (model.RoleName == "Staff")
                     {
+                        if (_context.Users.OfType<Staff>().Any(t=>t.Email.Contains(model.Email) || t.UserName.Contains(model.Email)))
+                        {
+                            ViewData["PostState"] = "Staff has been registered before!";
+                            return View(model);
+                        }
                         var user = new Staff() { UserName = model.Email, Email = model.Email };
                         var result = await UserManager.CreateAsync(user, model.Password);
 
@@ -171,25 +182,32 @@ namespace WebApplication1.Controllers
                             // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                             // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                             // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
+                            ViewData["PostState"] = "Staff has been created successfully!";
                             return RedirectToAction("StaffAccountView", "Admin");
                         }
                         AddErrors(result);
+
                     }
                     if (model.RoleName == "Trainer")
                     {
+                        if (_context.Users.OfType<Trainer>().Any(t => t.Email.Contains(model.Email) || t.UserName.Contains(model.Email)))
+                        {
+                            ViewBag.ResponseMessage = "Trainer has been registered before!";
+                            return View(model);
+                        }
                         var user = new Trainer() { UserName = model.Email, Email = model.Email };
                         var result = await UserManager.CreateAsync(user, model.Password);
 
                         if (result.Succeeded)
                         {
                             result = await UserManager.AddToRoleAsync(user.Id, "Trainer");
+
                             // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                             // Send an email with this link
                             // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                             // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                             // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
+                            ViewBag.ResponseMessage = "Trainer has been created successfully!";
                             return RedirectToAction("TrainerAccountView", "Admin");
                         }
                         AddErrors(result);
@@ -197,39 +215,49 @@ namespace WebApplication1.Controllers
                 }
                 if (User.IsInRole("Staff"))
                 {
-                    var user = new Trainee() { 
-                        UserName = model.Trainee.UserName, 
-                        Email = model.Email,
-                        Age = model.Trainee.Age,
-                        Location = model.Trainee.Location,
-                        Date_of_birth = model.Trainee.Date_of_birth,
-                        Education = model.Trainee.Education,
-                        Main_programming_lang = model.Trainee.Main_programming_lang,
-                        TOEIC_score = model.Trainee.TOEIC_score,
-                        Exp_details = model.Trainee.Exp_details,
-                        Department = model.Trainee.Department
-                    };
-                    var result = await UserManager.CreateAsync(user, model.Password);
-
-                    if (result.Succeeded)
+                    if (ModelState.IsValid)
                     {
+                        if (_context.Users.OfType<Trainee>().Any(t => t.Email.Contains(model.Email) || t.UserName.Contains(model.Email))) 
+                        {
+                            ViewBag.ResponseMessage = "Trainee has been registered before!";
+                            return View(model);
+                        }
+                        var user = new Trainee()
+                        {
+                            UserName = model.Trainee.UserName,
+                            Email = model.Email,
+                            Age = model.Trainee.Age,
+                            Location = model.Trainee.Location,
+                            Date_of_birth = model.Trainee.Date_of_birth,
+                            Education = model.Trainee.Education,
+                            Main_programming_lang = model.Trainee.Main_programming_lang,
+                            TOEIC_score = model.Trainee.TOEIC_score,
+                            Exp_details = model.Trainee.Exp_details,
+                            Department = model.Trainee.Department
+                        };
+                        var result = await UserManager.CreateAsync(user, model.Password);
 
-                        result = await UserManager.AddToRoleAsync(user.Id, "Trainee");
+                        if (result.Succeeded)
+                        {
+
+                            result = await UserManager.AddToRoleAsync(user.Id, "Trainee");
 
 
-                        // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                        // Send an email with this link
-                        // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                        // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                        // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
-                        return RedirectToAction("TraineeAccountView", "Staff");
+                            // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                            // Send an email with this link
+                            // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                            // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                            // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                            ViewBag.ResponseMessage = "Trainee has been created successfully!";
+                            return RedirectToAction("TraineeAccountView", "Staff");
+                        }
+                        AddErrors(result);
                     }
-                    AddErrors(result);
                 }
             }
 
             // If we got this far, something failed, redisplay form
+            ViewBag.ResponseMessage = "User has been registered before!";
             return View(model);
         }
 

@@ -1,0 +1,31 @@
+﻿@model WebApplication1.Models.Category
+
+<div class="modal fade" id="modal-category" role="dialog">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title" style="padding:20px">Edit Category</h3>
+            </div>
+            @using (Html.BeginForm("EditCategory", "Staff", new { @id = Model.Id }, FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary("", new { @class = "text-danger" })
+                
+                <div class="modal-body">
+                    @Html.EditorFor(t=>t.Id,new { @type = "hidden" })
+                    @Html.Label("Category Name")
+                    @Html.EditorFor(t => Model.CategoryName)
+                    @Html.ValidationMessageFor(model => Model.CategoryName, "", new { @class = "text-danger" })
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal" style="margin-right=50px">Close</button>
+                    <button type="button" class="btn btn-primary pull-right" data-save="modal" value="Update" />
+                </div>
+            }
+        </div>
+    </div>
+</div>

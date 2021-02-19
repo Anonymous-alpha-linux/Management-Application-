@@ -1,4 +1,4 @@
-﻿@model WebApplication1.Models.CreateCategoryViewModel
+﻿@model IEnumerable<WebApplication1.Models.Category>
 @{
     ViewBag.Title = "CategoryView";
 }
@@ -8,7 +8,13 @@
 @Html.ActionLink("Back to Index", "CourseView", "Staff", null, new { @class = "btn btn-default" })
 @Html.ActionLink("Create Category", "CreateCategory", "Staff", null, new { @class = "btn btn-default" })
 <br />
+@using (Html.BeginForm("CategoryView", "Staff", FormMethod.Post, htmlAttributes: new { @style = "margin: 4px;float:left" }))
+{
 
+    @Html.Label("Searching By", new { @style = "margin: 4px;font-display:auto" })
+    @Html.TextBox("searchString", "", new { @class = "form-control", @style = "margin: 4px; display:inline;width:100%" })
+    <button type="submit" class="btn btn-primary">Search</button>
+}
 <table class="table">
     <thead>
         <tr>
@@ -20,7 +26,7 @@
     </thead>
     <tbody>
         @{int i = 0;
-            foreach (var item in Model.Categories)
+            foreach (var item in Model)
             {
                 i++;
                 <tr>
@@ -33,7 +39,7 @@
                     </td>
                     <td>@item.Description</td>
                     <td scope="row">
-                        @Html.ActionLink("Edit","EditCategory","Staff",new { id = item.Id},new { @class = "btn btn-primary pull-left"})   
+                        @Html.ActionLink("Edit", "EditCategory", "Staff", new { id = item.Id }, new { @class = "btn btn-primary pull-left" })
                     </td>
                 </tr>
             }

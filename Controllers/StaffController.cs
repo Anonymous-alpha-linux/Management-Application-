@@ -247,14 +247,17 @@ namespace WebApplication1.Controllers
         /// <returns></returns>
         ///
         [Authorize(Roles = "Staff")]
-        public ActionResult CategoryView()
+        public ActionResult CategoryView(string searchString)
         {
-            var categories = _context.Categories.ToList();
-            var createCategoryViewModel = new CreateCategoryViewModel()
+            var categories = _context.Categories
+                .ToList();
+            if(searchString != null)
             {
-                Categories = categories,
-            };
-            return View(createCategoryViewModel);
+                categories = _context.Categories
+                .Where(t => t.CategoryName.Contains(searchString))
+                .ToList();
+            }
+            return View(categories);
         }
         /// <summary>
         /// Create Category
@@ -324,24 +327,36 @@ namespace WebApplication1.Controllers
         /// <returns></returns>
         /// 
         [Authorize(Roles = "Staff,Trainee")]
-        public ActionResult CourseView(string searchString)
+        public ActionResult CourseView(string searchString,string option)
         {
             if (!ModelState.IsValid)
             {
                 return HttpNotFound();
             }
             var courses = _context.Courses
+               .Include(t => t.Category)
+               .ToList();
+            if(option == "Name")
+            {
+                courses = _context.Courses
                .Where(t => t.CourseName.Contains(searchString))
                .Include(t => t.Category)
                .ToList();
-
-            if (String.IsNullOrEmpty(searchString))
+            }
+            if (option == "Category")
             {
                 courses = _context.Courses
-                .Include(t => t.Category)
-                .ToList();
+               .Where(t => t.Category.CategoryName.Contains(searchString))
+               .Include(t => t.Category)
+               .ToList();
             }
-
+            if (option == "Description")
+            {
+                courses = _context.Courses
+               .Where(t => t.CourseDetail.Contains(searchString))
+               .Include(t => t.Category)
+               .ToList();
+            }
             return View(courses);
         }
         /// <summary>
@@ -472,7 +487,15 @@ namespace WebApplication1.Controllers
             _context.SaveChanges();
             return RedirectToAction("DetailCourse", "Staff", new { @id = model.CourseId });
         }
+        public ActionResult ResignTrainerFromCourse(int id)
+        {
+            var trainerCourses = _context.TrainerCourses
+                .SingleOrDefault(t => t.Id == id);
+            _context.TrainerCourses.Remove(trainerCourses);
+            _context.SaveChanges();
 
+            return RedirectToAction("DetailCourse", "Staff", new { @id = trainerCourses.CourseId });
+        }
         /// <summary>
         /// Assign Trainee to Course
         /// </summary>
@@ -508,11 +531,10 @@ namespace WebApplication1.Controllers
             }
             else
             {
-                ViewBag.Message = "This trainee has been assigned to this course before!!";
-                return RedirectToAction("AssignCourseToTrainee", "Staff", new { @id = CourseId});
+                ModelState.AddModelError("Validation","This trainee has been assigned already");
             }
 
-            return RedirectToAction("CourseView", "Staff");
+            return RedirectToAction("DetailCourse", "Staff", new { @id = CourseId });
         }
         [Authorize(Roles = "Staff")]
         public ActionResult ResignTraineeFromCourse(int id)

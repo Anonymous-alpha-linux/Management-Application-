@@ -34,9 +34,10 @@
         @Html.Label("Trainer:")
         @if (Model.Trainer != null)
         {
-            <button type="button" class="btn btn-success">
-                @Html.ActionLink(Model.Trainer.Trainer.UserName, "DetailTrainer", "Staff", new { @id = Model.Trainer.Trainer.Id }, new { @class = "text-default" })
-            </button>
+        <button type="button" class="btn btn-success">
+            @Html.ActionLink(Model.Trainer.Trainer.UserName, "DetailTrainer", "Staff", new { @id = Model.Trainer.Trainer.Id }, new { @class = "text-default" })
+            <span>@Html.ActionLink("X", "ResignTrainerFromCourse", "Staff", new { @id = Model.Trainer.Id }, new { @class = "badge badge-light" })</span>
+        </button>
         }
         else
         {

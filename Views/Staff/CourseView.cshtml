@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<WebApplication1.Models.Course>
 @{
     ViewBag.Title = "Course View";
+    var properties = new List<string>() { "Name", "Category", "Description" };
 }
 <h1 style="font-weight:bold">Course List</h1>
 <h5 style="font-style:italic">Course Management</h5>
@@ -14,9 +15,22 @@
     <div class="col-md-6">
         @using (Html.BeginForm("CourseView", "Staff", FormMethod.Post))
         {
-            @Html.Label("Searching By Name:", new { @style = "margin: 4px; display:block; " })
-            @Html.TextBox("searchString", "", new { @class = "form-control", @style = "margin: 4px; display:inline;width: 400px" })
-            <button type="submit" class="btn btn-primary">Search</button>
+            <div class="search-part col-md-8">
+                @Html.Label("Searching By", new { @style = "margin: 4px;font-display:auto" })
+                <div class="row">
+                    @foreach (string prop in properties)
+                    {
+                        <div class="col-lg-offset-4" style="display:block;width:120px;margin-left:10px;margin-right:10px">
+                            @Html.RadioButton("option", prop, false, new { @style = "margin-right:12px;" })
+                            @Html.DisplayName(prop)
+                        </div>
+                    }
+                </div>
+                <div class="submit col-lg-push-4" style="display:inline-flex">
+                    @Html.TextBox("searchString", "", new { @class = "form-control", @style = "margin: 4px; display:inline;width:100%" })
+                    <button type="submit" class="btn btn-primary btn-xs" style="justify-items:flex-start">Search</button>
+                </div>
+            </div>
         }
     </div>
 </div>
@@ -39,14 +53,14 @@
                     <p><button href="#" class="btn btn-primary" disabled role="button" title="@item.Category.Description">@item.Category.CategoryName</button></p>
                 </div>
 
-                <div class="panel-footer">
-                    <div style="margin-left:4px;">
+                <div class="panel-footer" style="padding:20px">
+                    <div style="margin-right:4px;justify-items:center">
                         @Html.ActionLink("Delete", "DeleteCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-danger" })
                         @Html.ActionLink("Edit", "EditCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
                         @Html.ActionLink("Detail", "DetailCourse", "Staff", new { @id = item.Id }, new { @class = "btn btn-primary" })
                     </div>
-                    <br />
-                    <div style="margin:4px">
+                    
+                    <div style="margin-top:10px">
                     @Html.ActionLink("Assign Trainer", "AssignCourseToTrainer", "Staff", new { @id = item.Id }, new { @class = "btn btn-danger" })
                     @Html.ActionLink("Assign Trainee", "AssignCourseToTrainee", "Staff", new { @id = item.Id }, new { @class = "btn btn-default" })
                     </div>
